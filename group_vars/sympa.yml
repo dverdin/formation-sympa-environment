@@ -1,7 +1,7 @@
 # Group vars for sympa servers
 
 # FQDN for mail addresses
-sympa_mail_hostname: lists.example.com
+sympa_mail_hostname: "{{ ansible_host }}"
 
 # FQDN of web interface
 sympa_web_hostname: "{{ sympa_mail_hostname }}"
@@ -30,5 +30,6 @@ sympa_incoming_smtp: '192.168.66.66'
 
 sympa_outgoing_server: "{{ sympa_incoming_smtp }}"
 
-sympa_version: 6.2.30
+sympa_version: 6.2.32
 
+sympa_listmaster_email: noreply@renater.fr
