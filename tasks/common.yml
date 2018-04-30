@@ -1,4 +1,35 @@
 # Additional environement specific tasks to perform at the end of the common role
+- name: Create dir for storing apt cache in /vagrant
+  file: state=directory path=/vagrant/apt/cache/partial
+
+- name: Set apt cache location
+  copy: content='dir::cache::archives "/vagrant/apt/cache";' dest=/etc/apt/apt.conf.d/cache
+
+# May take a while...
+- name: Apt dist-upgrade
+  apt: update_cache=yes upgrade=dist cache_valid_time=3600
+
+- name: Install optional packages
+  apt: name={{ item }}
+  with_items:
+  - vim
+  - emacs
+
+- name: Getting the machine name for use in /etc/hosts;
+  command: hostname
+  register: machine_hostname_result
+  ignore_errors: True
+
+- name: Putting machine hostname in a variable
+  set_fact:
+    machine_hostname: "{{ machine_hostname_result.stdout }}"
+  when: machine_hostname_result.failed == False
+  
+  
+- name: Putting machine hostname in a variable
+  set_fact:
+    machine_hostname: "dummy"
+  when: machine_hostname_result.failed != False
 
 - name: Disallow SSH root login
   lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin\s" line="PermitRootLogin no"
